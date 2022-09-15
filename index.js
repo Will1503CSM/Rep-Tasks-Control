@@ -1,11 +1,17 @@
 import{saveTask, getTasks, onGetTasks, deleteTask, getTask, updateTask} from "./firestore.js"
 
-const taskForm = document.getElementById("task-form");
-const tasksContainer = document.getElementById("tasks-container");
-let editStatus = false;
-let id="";
-
+// const openModal = () =>{
+    //     ventModal.style.display = flex;
+    // }
+    const taskForm = document.getElementById("task-form");
+    const tasksContainer = document.getElementById("tasks-container");
+    let editStatus = false;
+    let id="";
+    
 window.addEventListener("DOMContentLoaded", async() =>  {
+
+
+        
     onGetTasks((querySnapshot) =>{
         let chtml ="";
         let cont=0;
@@ -36,6 +42,12 @@ window.addEventListener("DOMContentLoaded", async() =>  {
                     `;
         })
         chtml += `
+                <tfoot>
+                    <tr>
+                    <td >Número de Tareas: ${cont}</td>
+
+                    </tr>
+                </tfoot>
             </tbody>
             </table>
         `
@@ -80,3 +92,10 @@ taskForm.addEventListener("submit", (e)=>{
     taskForm["btn-task-save"].innerText = "Guardar";
     taskForm.reset();
 });
+// const ventModal = document.getElementById("ventModal");
+// const btnModal = document.getElementById("btn-modal");
+// btnModal.addEventListener("click",(e) =>{
+//     e.preventDefault();
+//     ventModal.style.display = true;
+   
+// })
