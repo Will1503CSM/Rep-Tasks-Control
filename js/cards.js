@@ -15,14 +15,16 @@ window.addEventListener("DOMContentLoaded", async() =>  {
             cont +=1;
             const task = doc.data()
             chtml += `
-                    <div class="card text-white bg-danger mb-3" style="max-width: 20rem;"> 
+                    <div class="card text-white bg-danger mb-3" style="max-width: 20rem;" padding="10px"> 
                     <div class="card-header">${cont}</div>
                     <div class="card-body">
-                      <h4 class="card-title">${task.title}</h4>
+                      <h4 class="card-title">${task.codigo}</h4>
+                      <p class="card-text">${task.fecha}</p>
                       <p class="card-text">${task.description}</p>
                       <button class="btn btn-primary btn-delete" data-id="${doc.id}" >Eliminar</button>
                       <button class="btn btn-secondary btn-edit" data-id="${doc.id}" >Editar</button>
                     </div>
+                    <br>
                     `;
         })
         cont = 0;
@@ -42,7 +44,8 @@ window.addEventListener("DOMContentLoaded", async() =>  {
             btn.addEventListener("click",async(e) =>{
                 const doc = await getTask(e.target.dataset.id);
                 const task = doc.data();
-                taskForm["task-title"].value = task.title;
+                taskForm["task-codigo"].value = task.codigo;
+                taskForm["task-fecha"].value = task.fecha;
                 taskForm["task-description"].value = task.description;
                 editStatus = true;
                 id = doc.id;
@@ -55,12 +58,13 @@ window.addEventListener("DOMContentLoaded", async() =>  {
 // Al hacer clich en Guardar
 taskForm.addEventListener("submit", (e)=>{
     e.preventDefault();
-    const title = taskForm["task-title"];
+    const codigo = taskForm["task-codigo"];
+    const fecha = taskForm["task-fecha"]
     const description = taskForm["task-description"];
     if(!editStatus){
-        saveTask(title.value, description.value);
+        saveTask(codigo.value,fecha.value, description.value);
     }else{
-        updateTask(id,{title: title.value, description: description.value});
+        updateTask(id,{codigo: codigo.value,fecha: fecha.value, description: description.value});
         editStatus = false;
     }
     taskForm["btn-task-save"].innerText = "Guardar";
