@@ -28,12 +28,12 @@ window.addEventListener("DOMContentLoaded", async() =>  {
             const task = doc.data()
             chtml += `
                         <tr id="${doc.id}">
-                            <th>${cont}</th>
-                            <td>${task.codigo}</td>
-                            <td>${task.fecha}</td>
-                            <td>${task.description}</td>
-                            <td><button class="btn btn-primary btn-delete" data-id="${doc.id}" >Eliminar</button></td>                        
-                            <td><button type="button" class="btn btn-secondary btn-edit" data-id="${doc.id}" data-bs-toggle="modal" data-bs-target="#ventanaModal">Editar</button></td>                      
+                            <th style="width:5%">${cont}</th>
+                            <td style="width:10%">${task.codigo}</td>
+                            <td style="width:10%">${task.fecha}</td>
+                            <td style="width:65%">${task.description}</td>
+                            <td style="width:5%"><button class="btn btn-primary btn-delete btn-sm" data-id="${doc.id}" >Eliminar</button></td>                        
+                            <td style="width:5%"><button type="button" class="btn btn-secondary btn-edit btn-sm" data-id="${doc.id}" data-bs-toggle="modal" data-bs-target="#ventanaModal">Editar</button></td>                      
                         </tr>
                     `;
         })

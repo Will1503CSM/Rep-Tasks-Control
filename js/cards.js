@@ -15,7 +15,7 @@ window.addEventListener("DOMContentLoaded", async() =>  {
             cont +=1;
             const task = doc.data()
             chtml += `
-                    <div class="card text-white bg-danger mb-3" style="max-width: 20rem;" padding="10px"> 
+                    <div class="card text-white bg-danger mb-3" style="max-width: 20rem;" padding="5px"> 
                     <div class="card-header">${cont}</div>
                     <div class="card-body">
                       <h4 class="card-title">${task.codigo}</h4>

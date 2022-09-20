@@ -1,0 +1,14 @@
+.btn-New {
+    background-color: ;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    justify-content: center;
+    align-items: center;
+}
+.container {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+}
