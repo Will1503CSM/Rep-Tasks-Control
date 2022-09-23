@@ -6,19 +6,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tasks Control</title>
-    <link rel="stylesheet" href="https://bootswatch.com/5/spacelab/bootstrap.min.css">
+    <!--<link rel="stylesheet" href="https://bootswatch.com/5/yeti/bootstrap.min.css"> -->
+    <!-- BOOTSTRAP -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.1/css/bootstrap.min.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap4.min.css">
+
     <link rel="stylesheet" href="/css/index.css">
+
 </head>
 
 <body>
-    <div class="container" >
+    <div class="container">
         <div class="row">
-            <div class="col-lg-12 mt-1 mb-1" >
+            <div class="col-lg-12 mt-1 mb-1">
                 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
                     <div class="container-fluid">
                         <a class="navbar-brand" href="#">Tasks Control</a>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01"
-                            aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false"
+                            aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
                         <div class="collapse navbar-collapse" id="navbarColor01">
@@ -33,65 +40,148 @@
                                 </li>
                             </ul>
                             <button class="btn btn-secondary my-2 my-sm-0">Tasks Control 2.0</button>
-        
+
                         </div>
                     </div>
                 </nav>
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-2" >
-                <p class="text-center"><h3>Mis Tareas</h3></p>
+            <div class="col-lg-2">
+                <p class="text-center"><strong>
+                        <h3>Mis Tareas</h3>
+                    </strong></p>
             </div>
-            <div id=""class="col-lg-1 btn-New" >
-                    <!-- Button trigger modal -->
-                        <button id="btn-Nuevo" type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#ventanaModal" >
-                        + Tarea
-                        </button>
-                </div>
+            <div id="" class="col-lg-1 btn-New">
+                <!-- Button trigger modal -->
+                <button id="btn-Nuevo" type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                    data-bs-target="#ventanaModal">
+                    + Tarea
+                </button>
+            </div>
         </div>
         <!--Ventana Modal-->
-        <div class="row" >
-            <div  class="container col-lg-12">
-                <div id="ventanaModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="row">
+            <div class="container">
+                <div id="ventanaModal" class="modal fade  modal-lg" tabindex="-1">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">Tarea</h5>
-                                <button id="btn-X" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <h3 class="modal-title"><strong>Tarea</strong></h3>
+                                <button id="btn-X" type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                             </div>
                             <form id="task-form">
                                 <div class="modal-body">
-                                    <p >
-                                        <label for="title">Código:</label>
-                                        <input type="text" placeholder="Código de la Tarea" id="task-codigo">
-                                    </p>
-                                    <p >
-                                        <label for="title">Fecha:</label>
-                                        <input type="text" placeholder="Fecha de Registro" id="task-fecha">
-                                    </p>
-                                    <p >
-                                        <label for="description">Descripción:</label>
-                                        <textarea id="task-description" rows="2" placeholder="Descripción de Tarea"></textarea>
-                                    </p>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <th class="th_alig"><label for="title">Código:</label></th>
+                                                <th><input type="text" placeholder="Código de la Tarea"
+                                                        id="task-codigo"></th>
+                                            </tr>
+                                            <tr>
+                                                <th class="th_alig"><label for="title">Fecha:</label></th>
+                                                <th><input type="text" placeholder="Fecha de Registro" id="task-fecha">
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <th class="th_alig"><label for="description">Descripción:</label></th>
+                                                <th><textarea id="task-description" cols="60" rows="4"
+                                                        placeholder="Descripción de Tarea"></textarea></th>
+                                            </tr>
+                                            <tr>
+                                                <th class="th_alig"><label for="estado">Estado:</label></th>
+                                                <th><input type="text" placeholder="" id="task-estado"
+                                                        disabled="disabled"></th>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                                 <div class="modal-footer">
-                                    <button id="btn-task-save" class="btn btn-primary" data-bs-dismiss="modal" type="submit">Guardar</button>
-                                    <button id="btn-cerrar" type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                    <button id="btn-task-save" class="btn btn-primary" data-bs-dismiss="modal"
+                                        type="submit">Guardar</button>
+                                    <button id="btn-cerrar" type="reset" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cerrar</button>
                                 </div>
                             </form>
-                    </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row" >
-            <div id="tasks-container" class="col-lg-12"></div>
+        <!-- Tabla Contenedora-->
+        <div class="row">
+            <div class="col-lg-12">
+                <table id="tasksTable" class="table table-hover ">
+                    <thead>
+                        <tr>
+                            <th>Nº</th>
+                            <th>Código</th>
+                            <th>Fecha</th>
+                            <th>Descripción</th> 
+                            <th>Estado</th> 
+                            <th>Eliminar</th>
+                            <th>Editar</th>
+                            </tr>
+                    </thead> 
+                        <div id="tasks-container" class="col-lg-12"></div>
+                </table>
+            </div>
         </div>
-    </div:container>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
-    <script type="module" src="/js/index.js"></script>
-</body>
+        </div:container>
+        
+        <!-- JQUERY -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script> 
+        
+        <!-- <script src="https://code.jquery.com/jquery-3.4.1.js"
+            integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous">
+            </script> -->
+        <!-- DATATABLES -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables.net/2.1.1/jquery.dataTables.min.js"></script>
+        <!--<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script> -->
+        
+        <!-- BOOTSTRAP -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables.net-bs5/1.12.1/dataTables.bootstrap5.min.js"></script>
+        <!-- <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script> -->
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous">
+        </script>
+        <script>
+            $(document).ready(function () {
+                alert("Entro a DataTable")
+                $('#tasksTable').DataTable({
+                    language: {
+                        processing: "Tratamiento en curso...",
+                        search: "Buscar&nbsp;:",
+                        lengthMenu: "Agrupar de _MENU_ items",
+                        info: "Mostrando del item _START_ al _END_ de un total de _TOTAL_ items",
+                        infoEmpty: "No existen datos.",
+                        infoFiltered: "(filtrado de _MAX_ elementos en total)",
+                        infoPostFix: "",
+                        loadingRecords: "Cargando...",
+                        zeroRecords: "No se encontraron datos con tu busqueda",
+                        emptyTable: "No hay datos disponibles en la tabla.",
+                        paginate: {
+                            first: "Primero",
+                            previous: "Anterior",
+                            next: "Siguiente",
+                            last: "Ultimo"
+                        },
+                        aria: {
+                            sortAscending: ": active para ordenar la columna en orden ascendente",
+                            sortDescending: ": active para ordenar la columna en orden descendente"
+                        }
+                    },
+                    scrollY: 400,
+                    lengthMenu: [ [10, 25, -1], [10, 25, "All"] ],
+                });
+            });
+        </script>
+        <script type="module" src="/js/index.js"></script>
+
+   </body>
 
 </html>

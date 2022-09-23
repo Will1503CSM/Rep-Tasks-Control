@@ -1,11 +1,8 @@
 import{saveTask, getTasks, onGetTasks, deleteTask, getTask, updateTask} from "./firestore.js"
-
 const taskForm = document.getElementById("task-form");
 const tasksContainer = document.getElementById("tasks-container");
 let editStatus = false;
 let id="";
-
-
 window.addEventListener("DOMContentLoaded", async() =>  {
     onGetTasks((querySnapshot) =>{
         let chtml ="";
@@ -15,17 +12,20 @@ window.addEventListener("DOMContentLoaded", async() =>  {
             cont +=1;
             const task = doc.data()
             chtml += `
-                    <div class="card text-white bg-danger mb-3" style="max-width: 20rem;" padding="5px"> 
+                    <div class="card text-white bg-danger mb-3" style="max-width: 20rem;" padding="50px"> 
                     <div class="card-header">${cont}</div>
                     <div class="card-body">
-                      <h4 class="card-title">${task.codigo}</h4>
-                      <p class="card-text">${task.fecha}</p>
-                      <p class="card-text">${task.description}</p>
-                      <button class="btn btn-primary btn-delete" data-id="${doc.id}" >Eliminar</button>
-                      <button class="btn btn-secondary btn-edit" data-id="${doc.id}" >Editar</button>
+                        <h4 class="card-title">${task.codigo}</h4>
+                        <p class="card-text">${task.fecha}</p>
+                        <p class="card-text">${task.description}</p>
+                        <p class="card-text">${task.estado}</p>
+                        <button class="btn btn-primary btn-delete" data-id="${doc.id}" >Eliminar</button>
+                        <button class="btn btn-secondary btn-edit" data-id="${doc.id}" >Editar</button>
                     </div>
+
                     <br>
                     `;
+            console.log("Cont" + cont);
         })
         cont = 0;
         tasksContainer.innerHTML += chtml;
@@ -47,11 +47,11 @@ window.addEventListener("DOMContentLoaded", async() =>  {
                 taskForm["task-codigo"].value = task.codigo;
                 taskForm["task-fecha"].value = task.fecha;
                 taskForm["task-description"].value = task.description;
+                taskForm["task-estado"].value = task.estado;
                 editStatus = true;
                 id = doc.id;
                 taskForm["btn-task-save"].innerText = "Actualizar";
-                
-            })
+                })
         })
     })
 });
@@ -61,10 +61,11 @@ taskForm.addEventListener("submit", (e)=>{
     const codigo = taskForm["task-codigo"];
     const fecha = taskForm["task-fecha"]
     const description = taskForm["task-description"];
+    const estado = taskForm["task-estado"];
     if(!editStatus){
-        saveTask(codigo.value,fecha.value, description.value);
+        saveTask(codigo.value,fecha.value, description.value, estado.value);
     }else{
-        updateTask(id,{codigo: codigo.value,fecha: fecha.value, description: description.value});
+        updateTask(id,{codigo: codigo.value,fecha: fecha.value, description: description.value, estado: estado.value});
         editStatus = false;
     }
     taskForm["btn-task-save"].innerText = "Guardar";
