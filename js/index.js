@@ -15,17 +15,12 @@ window.addEventListener("DOMContentLoaded", async () => {
     onGetTasks((querySnapshot) => {
         console.log("Obtiene Snap");
         let cont = 0;
-        //Tabla
-
-        eliminarRows();
-
+        //eliminarRows();
         querySnapshot.forEach(doc => {
             cont += 1;
             const task = doc.data()
-
             const row = document.createElement("tr");
             row.id = cont;
-            
 
             //Agregar Radio
             const radiobox = document.createElement('input');
@@ -90,7 +85,6 @@ window.addEventListener("DOMContentLoaded", async () => {
         // appends <table> into <body>
         body.appendChild(tabla);
         console.log("Termino de Construir Tabla");
-        pintarPaginacion();
 
         contRows = cont;
         cont = 0;
@@ -146,9 +140,10 @@ window.addEventListener("DOMContentLoaded", async () => {
         //     ventModal.style.display = "block";
         // })
 
-
+        loadScript("js/paintDataTable.js");
     })
     contRows = 0;
+    
 });
 // Al HAcer CLick en Cerrar dentro de Modal
 taskForm.addEventListener("reset", (e) => {
@@ -196,76 +191,20 @@ btnNew.addEventListener("click", (e) => {
     //taskForm["btn-task-save"].innerText = "Guardar";
     taskForm.reset();
 })
-function eliminarRows(){
-    console.log("Entro a eliminar Rows");    
-    for (var i = 0; i < contRows; i++) {
-        document.getElementById(i+1).remove();
-     }
-}
-function pintarPaginacion(e){
-    console.log("Entro Poner PaginadorE")
-    console.log(e.type);
-    //e.target.removeEventListener(e.type.value, pintarPaginacion);
-    if(ban==false){
-        $('#tasksTable').DataTable({
-       //     paging: true,
-        //    searching: true,
-            language: {
-                processing: "Tratamiento en curso...",
-                search: "Buscar&nbsp;:",
-                lengthMenu: "Agrupar de _MENU_ tareas",
-                info: "Mostrando de la tarea _START_ al _END_ de un total de _TOTAL_ tareas",
-                infoEmpty: "No existen datos.",
-                infoFiltered: "(filtrado de _MAX_ elementos en total)",
-                infoPostFix: "",
-                loadingRecords: "Cargando...",
-                zeroRecords: "No se encontraron datos con tu busqueda",
-                emptyTable: "No hay datos disponibles en la tabla.",
-                paginate: {
-                    first: "Primero",
-                    previous: "Anterior",
-                    next: "Siguiente",
-                    last: "Ultimo"
-                },
-                aria: {
-                    sortAscending: ": active para ordenar la columna en orden ascendente",
-                    sortDescending: ": active para ordenar la columna en orden descendente"
-                }
-            },
-           // scrollY: 600,
-            lengthMenu: [ [15, 25, -1], [15, 25, "All"] ],
-        });
-        ban == true;
-    }
-}
-// $(document).ready(function () {
-// $(window).on("load",async function () {
-//     alert("Paginador");
-//     console.log("Entro Poner PaginadorReady");
-//         $('#tasksTable').DataTable({
-//             language: {
-//                 processing: "Tratamiento en curso...",
-//                 search: "Buscar&nbsp;:",
-//                 lengthMenu: "Agrupar de _MENU_ items",
-//                 info: "Mostrando del item _START_ al _END_ de un total de _TOTAL_ items",
-//                 infoEmpty: "No existen datos.",
-//                 infoFiltered: "(filtrado de _MAX_ elementos en total)",
-//                 infoPostFix: "",
-//                 loadingRecords: "Cargando...",
-//                 zeroRecords: "No se encontraron datos con tu busqueda",
-//                 emptyTable: "No hay datos disponibles en la tabla.",
-//                 paginate: {
-//                     first: "Primero",
-//                     previous: "Anterior",
-//                     next: "Siguiente",
-//                     last: "Ultimo"
-//                 },
-//                 aria: {
-//                     sortAscending: ": active para ordenar la columna en orden ascendente",
-//                     sortDescending: ": active para ordenar la columna en orden descendente"
-//                 }
-//             },
-//             scrollY: 400,
-//             lengthMenu: [ [10, 25, -1], [10, 25, "All"] ],
-//         });
-// });
+// Eliminar Rows de la Tabla
+// function eliminarRows(){
+//     console.log("Entro a eliminar Rows");    
+//     for (var i = 0; i < contRows; i++) {
+//         console.log(document.getElementById(i+1));
+//         document.getElementById(i+1).remove();
+//      }
+// }
+
+function loadScript(src) {
+    console.log("Ingreso a loadScript");
+    let script = document.createElement('script');
+    script.src = src;
+    script.async = true;
+    document.body.append(script);
+    console.log("Final de loadScript");
+  }
