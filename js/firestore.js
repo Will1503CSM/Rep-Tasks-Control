@@ -1,4 +1,3 @@
-
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-app.js";
 import { 
@@ -28,11 +27,13 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore();
-export const saveTask = (codigo, fecha, description, estado ) =>
-    addDoc(collection(db,"tasks"),{codigo, fecha, description, estado});
 
-export const getTasks = () => 
-    getDocs(collection(db,"tasks"))
+export async function saveTask(codigo, fecha, description, estado ) {
+    const dbRef =await addDoc(collection(db,"tasks"),{codigo, fecha, description, estado});
+    return dbRef.id;
+}
+
+export const getTasks = () => getDocs(collection(db,"tasks"));
 
 export const onGetTasks = (callback)=> onSnapshot(collection(db,"tasks"), callback);
 
@@ -40,4 +41,6 @@ export const deleteTask = id => deleteDoc(doc(db,"tasks", id));
 
 export const getTask = id => getDoc(doc(db,"tasks",id));
 
-export const updateTask = (id, newFields) => updateDoc(doc(db,"tasks",id), newFields);
+export async function updateTask (id, newFields) {
+  await updateDoc(doc(db,"tasks",id), newFields);
+}

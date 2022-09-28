@@ -1,4 +1,3 @@
-console.log("INICIO  paintDataTable");
 $('#tasksTable').DataTable({
     destroy: true,
     language: {
@@ -23,6 +22,6 @@ $('#tasksTable').DataTable({
                 sortDescending: ": active para ordenar la columna en orden descendente"
             }
         },
-       // scrollY: 600,
         lengthMenu: [ [10, 20, -1], [10, 20, "All"] ],
     })
+    
