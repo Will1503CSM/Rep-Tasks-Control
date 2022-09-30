@@ -13,7 +13,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-firestore.js"
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
-
+console.log("Estoy en Firestrore" )
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDcYCq0BsO2-HUYI6JmTlHoYNr6TD85Sgk",
@@ -26,21 +26,31 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore();
-
+const db = getFirestore(app);
+/* Agregar nuevo Documento*/
 export async function saveTask(codigo, fecha, description, estado ) {
+  try {
     const dbRef =await addDoc(collection(db,"tasks"),{codigo, fecha, description, estado});
+    console.log("Document agregado con ID: ", dbRef.id);    
     return dbRef.id;
-}
+  } catch (error) {
+    console.log("Error agregando Documento: ", error);
+  }  
 
+}
+/* Obtener Documentos*/
 export const getTasks = () => getDocs(collection(db,"tasks"));
 
+/* Obtener SnapShot*/
 export const onGetTasks = (callback)=> onSnapshot(collection(db,"tasks"), callback);
 
+/* Eliminar Documento*/
 export const deleteTask = id => deleteDoc(doc(db,"tasks", id));
 
+/* Obtener 1 Documento*/
 export const getTask = id => getDoc(doc(db,"tasks",id));
 
+/* Actualizar Documento*/
 export async function updateTask (id, newFields) {
   await updateDoc(doc(db,"tasks",id), newFields);
 }

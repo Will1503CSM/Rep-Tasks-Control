@@ -23,5 +23,15 @@ $('#tasksTable').DataTable({
             }
         },
         lengthMenu: [ [10, 20, -1], [10, 20, "All"] ],
+        columnDefs: [
+            {
+                targets: [0], 
+                visible: false, //ocultamos la columna de ID que es la [0]                        
+            },
+            // {
+            //     targets: -1,        
+            //     defaultContent: "<div class='wrapper text-center'><div class='btn-group'><button class='btnEditar btn btn-primary' data-toggle='tooltip' title='Editar'>"+iconoEditar+"</button><button class='btnBorrar btn btn-danger' data-toggle='tooltip' title='Borrar'>"+iconoBorrar+"</button></div></div>"
+            // }
+        ]	   
     })
     
