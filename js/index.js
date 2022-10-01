@@ -1,5 +1,5 @@
-
 import { saveTask, getTasks, onGetTasks, deleteTask, getTask, updateTask } from "./firestore.js"
+import { loadDataTable } from "./paintDataTable.js"
 //import saveTask from "./firestore.js"
 const taskForm = document.getElementById("task-form");
 const tabla = document.getElementById("tasksTable");
@@ -7,6 +7,8 @@ const tabla = document.getElementById("tasksTable");
 const body = document.getElementsByTagName("body")[0];
 // Crea un elemento <table> y un elemento <tbody>
 const tblBody = document.createElement("tbody");  
+// DataTable
+var tableDT= null;
 
 //creamos constantes para los iconos editar y borrar    
 const iconoEditar = '<svg class="bi bi-pencil-square" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/></svg>';
@@ -21,11 +23,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     onGetTasks((querySnapshot) => {
         console.log("Obtiene Snap. Ban:"+ban);
         let cont = 0;
-        if(ban==true){
-            // const dataTab = $('#tasksTable').DataTable();
-            // console.log("dataTab:" + dataTab.len());
-        }
-        //eliminarRows();
+        
         querySnapshot.forEach(doc => {
             cont += 1;
             const task = doc.data()
@@ -62,7 +60,6 @@ window.addEventListener("DOMContentLoaded", async () => {
             btnA.type = "button"
             btnA.setAttribute("data-id",doc.id);
             btnA.classList.value="btn btn-primary btn-edit btn-sm";
-            btnA.id = "btnAct";
             btnA.setAttribute("data-bs-toggle","modal");
             btnA.setAttribute("data-bs-target","#ventanaModal");
             btnA.id = doc.id;
@@ -72,14 +69,14 @@ window.addEventListener("DOMContentLoaded", async () => {
 
             const celda6 = document.createElement("td");
             const btnE = document.createElement("button");
+            btnA.type = "button"
             btnE.setAttribute("data-id",doc.id);
+            btnE.classList.value = "btn-delete btn btn-danger  btn-sm";
+            btnE.id = doc.id;
             btnE.innerHTML = iconoBorrar;
-            btnE.classList.value = "btn btn-danger btn-delete btn-sm";
-            btnE.id = "btnEli";
             celda6.appendChild(btnE);
             row.appendChild(celda6);
         
-
             tblBody.appendChild(row);
         })
         // posiciona el <tbody> debajo del elemento <table>
@@ -89,27 +86,29 @@ window.addEventListener("DOMContentLoaded", async () => {
         console.log("Termino de Construir Tabla");
         contRows = cont;
         cont = 0;
-        // Al Escuchar Agregar Registro
-
-
+        
         // Al hacer clich en Boton Eliminar
-        const btnsDelete = document.querySelectorAll("button.btn-delete");
+        var btnsDelete = tabla.querySelectorAll(".btn-delete");
+        console.log("Click en Boton Elimnar"+btnsDelete);
         btnsDelete.forEach(btn => {
             btn.addEventListener("click", ({ target: { dataset } }) => {
-                console.log(dataset.id)
+                console.log("dataset: "+ dataset.id);
                 var resultado = window.confirm('Estas seguro?');
                 if (resultado === true) {
                     deleteTask(dataset.id);
-                    taskForm["btn-task-save"].innerText = "Guardar";
+                    //taskForm["btn-task-save"].innerText = "Guardar";
                     taskForm.reset();
+                    tabla.row(rowId).data([ id, codigo, fecha, description, estado, btnActu, btnElim ]).draw();
                 }
             })
         })
         // Al hacer clich en Boton Editar
+ 
         const btnsEdit = document.querySelectorAll("button.btn-edit");
         btnsEdit.forEach(btn => {
             btn.addEventListener("click", async (e) => {
-                const doc = await getTask(btnsEdit.id);
+                console.log(btn.getAttribute("id"));
+                const doc = await getTask(btn.getAttribute("id"));
                 const task = doc.data();
                 taskForm["task-codigo"].value = task.codigo;
                 taskForm["task-fecha"].value = task.fecha;
@@ -140,8 +139,10 @@ window.addEventListener("DOMContentLoaded", async () => {
         //     ventModal.classList.add("show");
         //     ventModal.style.display = "block";
         // })
-        loadScript("js/paintDataTable.js");
-        ban =true;
+       
+       // loadScript("js/paintDataTable.js");
+       tableDT = loadDataTable(); 
+       ban =true;
     })
     contRows = 0;
 });
@@ -151,9 +152,11 @@ taskForm.addEventListener("reset", (e) => {
     taskForm["btn-task-save"].innerText = "Guardar";
     taskForm.reset();
     const ventModal = document.getElementById("ventanaModal");
+    editStatus = false;
     ventModal.classList.remove("show");
     ventModal.style.display = "none";
 })
+
 // Al hacer clich en Guardar
 taskForm.addEventListener("submit", async (e) => {
     console.log("Ingreso a Guardar/Actu");
@@ -163,26 +166,28 @@ taskForm.addEventListener("submit", async (e) => {
     const description = (taskForm["task-description"]).value;
     const estado = (taskForm["task-estado"]).value;
     if (!editStatus) {
+        console.log("Antes de Agregar Nuevo");
         const idObt = await saveTask(codigo, fecha, description, estado);
-        const tabla = $('#tasksTable').DataTable();
-        const input = "<input name='"+"rad"+"' type='"+"radio"+"' id='"+(idObt)+"' value='"+(idObt)+"'></input>";
+        console.log("Entro a Nuevo: "+idObt );
         const btnActu = "<button type='"+"button"+"' data-id='"+(idObt)+"' class='"+"btn btn-primary btn-edit btn-sm"+"' data-bs-toggle='"+"modal"+"' data-bs-target='"+"#ventanaModal"+"' id='"+(idObt)+"'>"+iconoEditar+"</button>";
         const btnElim = "<button data-id='"+(idObt)+"' class="+"'btn btn-danger btn-delete btn-sm'"+" id='"+(idObt)+"'>"+iconoBorrar+"</button>";
-        tabla.row.add([input, codigo, fecha, description, estado, btnActu, btnElim ]).draw().node().id=(contRows+1);
-        
+       // tableDT.row.add([ idObt, codigo, fecha, description, estado, btnActu, btnElim ]).draw().node().id=(contRows+1);
     } else {
-        await updateTask(id, { codigo: codigo, fecha: fecha, description: description, estado: estado });
-        console.log("Entro a Update Id: "+id)
-        const tabla = $('#tasksTable').DataTable();
-        const input = "<input name='"+"rad"+"' type='"+"radio"+"' id='"+(id)+"' value='"+(id)+"'></input>";
-        const btnActu = "<button type='"+"button"+"' data-id='"+(id)+"' class='"+"btn btn-primary btn-edit btn-sm"+"' data-bs-toggle='"+"modal"+"' data-bs-target='"+"#ventanaModal"+"' id='"+(id)+"'>"+iconoEditar+"</button>";
-        const btnElim = "<button data-id='"+(id)+"' class="+"'btn btn-danger btn-delete btn-sm'"+" id='"+(id)+"'>"+iconoBorrar+"</button>";
-        await tabla.row(id).data([input,codigo, fecha, description, estado, btnActu, btnElim ]).draw();
-        editStatus = false;
+            await updateTask(id, { codigo: codigo, fecha: fecha, description: description, estado: estado });
+            const rowId = tableDT.row( { selected: true } ).count();
+            console.log("Entro a Update Id: "+id + " row: "+rowId);
+            const btnActu = "<button type='"+"button"+"' data-id='"+(id)+"' class='"+"btn btn-primary btn-edit btn-sm"+"' data-bs-toggle='"+"modal"+"' data-bs-target='"+"#ventanaModal"+"' id='"+(id)+"'>"+iconoEditar+"</button>";
+            const btnElim = "<button data-id='"+(id)+"' class="+"'btn btn-danger btn-delete btn-sm'"+" id='"+(id)+"'>"+iconoBorrar+"</button>";
+           // tableDT.row(rowId).data([ id, codigo, fecha, description, estado, btnActu, btnElim ]).draw();
+            editStatus = false;
     }
+    console.log("Antes de loadDataTable");
+    //eliminarRows();
+    tableDT.draw();
     taskForm["btn-task-save"].innerText = "Guardar";
     taskForm.reset();
 });
+
 // Al hacer click en X
 const btnX = document.getElementById("btn-X");
 btnX.addEventListener("click", (e) => {
@@ -206,16 +211,7 @@ btnNew.addEventListener("click", (e) => {
 })
 //Eliminar Rows de la Tabla
 function eliminarRows(){
-    console.log("Entro a eliminar Rows: "+ contRows);    
-    for (var i = 0; i < contRows; i++) {
-        console.log(document.getElementById(i+1));
-        try {
-            document.getElementById(i+1).remove();    
-        } catch (error) {
-            console.log(error);    
-        }
-        console.log("Eliminado")
-     }
+    tableDT.destroy();
 }
 
 function loadScript(src) {
@@ -224,3 +220,5 @@ function loadScript(src) {
     script.async = true;
     document.body.append(script);
   }
+
+  

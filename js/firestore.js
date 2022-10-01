@@ -13,7 +13,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-firestore.js"
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
-console.log("Estoy en Firestrore" )
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDcYCq0BsO2-HUYI6JmTlHoYNr6TD85Sgk",
@@ -52,5 +51,10 @@ export const getTask = id => getDoc(doc(db,"tasks",id));
 
 /* Actualizar Documento*/
 export async function updateTask (id, newFields) {
-  await updateDoc(doc(db,"tasks",id), newFields);
+  try {
+    await updateDoc(doc(db,"tasks",id), newFields);
+    console.log("Document actualizado con ID: ", id);
+  } catch (error) {
+    console.log("Error actualizando Documento: ", error);
+  }
 }
