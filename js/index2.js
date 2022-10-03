@@ -1,73 +1,114 @@
 import { saveTask, getTasks, onGetTasks, deleteTask, getTask, updateTask } from "./firestore.js"
+import { loadDataTable } from "./paintDataTable.js"
+//import saveTask from "./firestore.js"
 const taskForm = document.getElementById("task-form");
-const tasksContainer = document.getElementById("tasks-container");
+const tabla = document.getElementById("tasksTable");
+// Obtener la referencia del elemento body
+const body = document.getElementsByTagName("body")[0];
+// Crea un elemento <table> y un elemento <tbody>
+const tblBody = document.createElement("tbody");  
+// DataTable
+var tableDT= null;
+
+//creamos constantes para los iconos editar y borrar    
+const iconoEditar = '<svg class="bi bi-pencil-square" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/></svg>';
+const iconoBorrar = '<svg class="bi bi-trash" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>';
+
+let contRows=0;
 let editStatus = false;
 let id = "";
 let ban = false;
-
 window.addEventListener("DOMContentLoaded", async () => {
+    console.log("ingreso a DOMContetLoaded");
     onGetTasks((querySnapshot) => {
-        alert("Entro a Crear Tabla");
-        let chtml = "";
+        console.log("Obtiene Snap. Ban:"+ban);
         let cont = 0;
-        tasksContainer.innerHTML = "";
-
+        
         querySnapshot.forEach(doc => {
             cont += 1;
             const task = doc.data()
-            chtml += `
-                        <tr  id="${doc.id}">
-                            <th style="width:5%">
-                                <fieldset class="form-group">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="optionsRadios" id="${doc.id}" value="option2">
-                                    </div>
-                                </fieldset>
-                            </th>
-                            <td style="width:10%">${task.codigo}</td>
-                            <td style="width:10%">${task.fecha}</td>
-                            <td style="width:60%">${task.description}</td>
-                            <td style="width:5%">${task.estado}</td></td>
-                            <td style="width:5%"><button class="btn btn-primary btn-delete btn-sm" data-id="${doc.id}" >Eliminar</button></td>       
-                            <td style="width:5%"><button type="button" class="btn btn-secondary btn-edit btn-sm" data-id="${doc.id}" data-bs-toggle="modal" data-bs-target="#ventanaModal">Editar</button></td>     
-                        </tr>
-                    `;
+            const row = document.createElement("tr");
+            row.id = cont;
+
+            const celda = document.createElement("td");
+            const textoCelda = document.createTextNode(doc.id);
+            celda.appendChild(textoCelda);
+            row.appendChild(celda);
+            
+            const celda1 = document.createElement("td");
+            const textoCelda1 = document.createTextNode(task.codigo);
+            celda1.appendChild(textoCelda1);
+            row.appendChild(celda1);
+
+            const celda2 = document.createElement("td");
+            const textoCelda2 = document.createTextNode(task.fecha);
+            celda2.appendChild(textoCelda2);
+            row.appendChild(celda2);
+
+            const celda3 = document.createElement("td");
+            const textoCelda3 = document.createTextNode(task.description);
+            celda3.appendChild(textoCelda3);
+            row.appendChild(celda3);
+
+            const celda4 = document.createElement("td");
+            const textoCelda4 = document.createTextNode(task.estado);
+            celda4.appendChild(textoCelda4);
+            row.appendChild(celda4);
+
+            const celda5 = document.createElement("td");
+            const btnA = document.createElement("button");
+            btnA.type = "button"
+            btnA.setAttribute("data-id",doc.id);
+            btnA.classList.value="btn btn-primary btn-edit btn-sm";
+            btnA.setAttribute("data-bs-toggle","modal");
+            btnA.setAttribute("data-bs-target","#ventanaModal");
+            btnA.id = doc.id;
+            btnA.innerHTML = iconoEditar;
+            celda5.appendChild(btnA);
+            row.appendChild(celda5); 
+
+            const celda6 = document.createElement("td");
+            const btnE = document.createElement("button");
+            btnA.type = "button"
+            btnE.setAttribute("data-id",doc.id);
+            btnE.classList.value = "btn-delete btn btn-danger  btn-sm";
+            btnE.id = doc.id;
+            btnE.innerHTML = iconoBorrar;
+            celda6.appendChild(btnE);
+            row.appendChild(celda6);
+        
+            tblBody.appendChild(row);
         })
-
-        //<tfoot>
-        //<tr>
-        //    <td colspan="7">Número de Tareas: ${cont}</td>
-        //</tr>
-        //</tfoot>
-        //genera_tabla();
+        // posiciona el <tbody> debajo del elemento <table>
+        tabla.appendChild(tblBody);
+        // appends <table> into <body>
+        body.appendChild(tabla);
+        console.log("Termino de Construir Tabla");
+        contRows = cont;
         cont = 0;
-        tasksContainer.innerHTML += chtml;
-        genera_tabla();
-        // let table = new DataTable('#tasksTable', {
-        //     // options
-        // });
-
+        
         // Al hacer clich en Boton Eliminar
-        const btnsDelete = tasksContainer.querySelectorAll(".btn-delete");
+        var btnsDelete = tabla.querySelectorAll(".btn-delete");
+        console.log("Click en Boton Elimnar"+btnsDelete);
         btnsDelete.forEach(btn => {
-            console.log("Entro a Eliminar");
             btn.addEventListener("click", ({ target: { dataset } }) => {
+                console.log("dataset: "+ dataset.id);
                 var resultado = window.confirm('Estas seguro?');
                 if (resultado === true) {
                     deleteTask(dataset.id);
-                    taskForm["btn-task-save"].innerText = "Guardar";
+                    //taskForm["btn-task-save"].innerText = "Guardar";
                     taskForm.reset();
+                    tabla.row(rowId).data([ id, codigo, fecha, description, estado, btnActu, btnElim ]).draw();
                 }
             })
         })
         // Al hacer clich en Boton Editar
-        const btnsEdit = tasksContainer.querySelectorAll(".btn-edit");
+ 
+        const btnsEdit = document.querySelectorAll("button.btn-edit");
         btnsEdit.forEach(btn => {
-            console.log("Entro a Editar");
             btn.addEventListener("click", async (e) => {
-                console.log("EN Bton Editar");
-                console.log(e.target.dataset.id);
-                const doc = await getTask(e.target.dataset.id);
+                console.log(btn.getAttribute("id"));
+                const doc = await getTask(btn.getAttribute("id"));
                 const task = doc.data();
                 taskForm["task-codigo"].value = task.codigo;
                 taskForm["task-fecha"].value = task.fecha;
@@ -79,7 +120,6 @@ window.addEventListener("DOMContentLoaded", async () => {
                 ban = true;
             })
         })
-
         //Al hacer click en la Fila de la Tabla
         // const tasksTable = document.getElementById("tasksTable");
         // tasksTable.addEventListener("click", async (e) => {
@@ -99,9 +139,12 @@ window.addEventListener("DOMContentLoaded", async () => {
         //     ventModal.classList.add("show");
         //     ventModal.style.display = "block";
         // })
-
-
+       
+       // loadScript("js/paintDataTable.js");
+       tableDT = loadDataTable(); 
+       ban =true;
     })
+    contRows = 0;
 });
 // Al HAcer CLick en Cerrar dentro de Modal
 taskForm.addEventListener("reset", (e) => {
@@ -109,27 +152,42 @@ taskForm.addEventListener("reset", (e) => {
     taskForm["btn-task-save"].innerText = "Guardar";
     taskForm.reset();
     const ventModal = document.getElementById("ventanaModal");
+    editStatus = false;
     ventModal.classList.remove("show");
     ventModal.style.display = "none";
 })
 
 // Al hacer clich en Guardar
-taskForm.addEventListener("submit", (e) => {
+taskForm.addEventListener("submit", async (e) => {
+    console.log("Ingreso a Guardar/Actu");
     e.preventDefault();
-    const codigo = taskForm["task-codigo"];
-    const fecha = taskForm["task-fecha"];
-    const description = taskForm["task-description"];
-    const estado = taskForm["task-estado"];
+    const codigo = (taskForm["task-codigo"]).value;
+    const fecha = (taskForm["task-fecha"]).value;
+    const description = (taskForm["task-description"]).value;
+    const estado = (taskForm["task-estado"]).value;
     if (!editStatus) {
-        //const estado = "Nuevo";
-        saveTask(codigo.value, fecha.value, description.value, estado.value);
+        console.log("Antes de Agregar Nuevo");
+        const idObt = await saveTask(codigo, fecha, description, estado);
+        console.log("Entro a Nuevo: "+idObt );
+        const btnActu = "<button type='"+"button"+"' data-id='"+(idObt)+"' class='"+"btn btn-primary btn-edit btn-sm"+"' data-bs-toggle='"+"modal"+"' data-bs-target='"+"#ventanaModal"+"' id='"+(idObt)+"'>"+iconoEditar+"</button>";
+        const btnElim = "<button data-id='"+(idObt)+"' class="+"'btn btn-danger btn-delete btn-sm'"+" id='"+(idObt)+"'>"+iconoBorrar+"</button>";
+       // tableDT.row.add([ idObt, codigo, fecha, description, estado, btnActu, btnElim ]).draw().node().id=(contRows+1);
     } else {
-        updateTask(id, { codigo: codigo.value, fecha: fecha.value, description: description.value, estado: estado.value });
-        editStatus = false;
+            await updateTask(id, { codigo: codigo, fecha: fecha, description: description, estado: estado });
+            const rowId = tableDT.row( { selected: true } ).count();
+            console.log("Entro a Update Id: "+id + " row: "+rowId);
+            const btnActu = "<button type='"+"button"+"' data-id='"+(id)+"' class='"+"btn btn-primary btn-edit btn-sm"+"' data-bs-toggle='"+"modal"+"' data-bs-target='"+"#ventanaModal"+"' id='"+(id)+"'>"+iconoEditar+"</button>";
+            const btnElim = "<button data-id='"+(id)+"' class="+"'btn btn-danger btn-delete btn-sm'"+" id='"+(id)+"'>"+iconoBorrar+"</button>";
+           // tableDT.row(rowId).data([ id, codigo, fecha, description, estado, btnActu, btnElim ]).draw();
+            editStatus = false;
     }
+    console.log("Antes de loadDataTable");
+    //eliminarRows();
+    tableDT.draw();
     taskForm["btn-task-save"].innerText = "Guardar";
     taskForm.reset();
 });
+
 // Al hacer click en X
 const btnX = document.getElementById("btn-X");
 btnX.addEventListener("click", (e) => {
@@ -140,6 +198,7 @@ btnX.addEventListener("click", (e) => {
 // Al hacer click en Nuevo
 const btnNew = document.getElementById("btn-Nuevo");
 btnNew.addEventListener("click", (e) => {
+    console.log("Ingreso a Nuevo");
     let date = new Date();
     let fechaNormal = String(date.getDate()).padStart(2, '0') + '/' + String(date.getMonth() + 1).padStart(2, '0') + '/' + date.getFullYear();
     let fechaCod = String(date.getFullYear() + String(date.getMonth() + 1).padStart(2, '0'));
@@ -150,71 +209,16 @@ btnNew.addEventListener("click", (e) => {
     //taskForm["btn-task-save"].innerText = "Guardar";
     taskForm.reset();
 })
-
-//  $(document).ready(function () {
-//     alert("Entro Poner Paginador")
-//     $('#tasksTable').DataTable({
-//         language: {
-//             processing: "Tratamiento en curso...",
-//             search: "Buscar&nbsp;:",
-//             lengthMenu: "Agrupar de _MENU_ items",
-//             info: "Mostrando del item _START_ al _END_ de un total de _TOTAL_ items",
-//             infoEmpty: "No existen datos.",
-//             infoFiltered: "(filtrado de _MAX_ elementos en total)",
-//             infoPostFix: "",
-//             loadingRecords: "Cargando...",
-//             zeroRecords: "No se encontraron datos con tu busqueda",
-//             emptyTable: "No hay datos disponibles en la tabla.",
-//             paginate: {
-//                 first: "Primero",
-//                 previous: "Anterior",
-//                 next: "Siguiente",
-//                 last: "Ultimo"
-//             },
-//             aria: {
-//                 sortAscending: ": active para ordenar la columna en orden ascendente",
-//                 sortDescending: ": active para ordenar la columna en orden descendente"
-//             }
-//         },
-//         scrollY: 400,
-//         lengthMenu: [ [10, 25, -1], [10, 25, "All"] ],
-//     });
-// });
-
-function genera_tabla() {
-    // Obtener la referencia del elemento body
-    var body = document.getElementsByTagName("body")[0];
-
-    // Crea un elemento <table> y un elemento <tbody>
-    var tabla = document.createElement("table");
-    tabla.setAttribute("id", "tasksTable");
-    tabla.setAttribute("class", "table table-hover");
-
-    var tblBody = document.createElement("tbody");
-
-    // Crea las celdas
-    for (var i = 0; i < 6; i++) {
-        // Crea las hileras de la tabla
-        var hilera = document.createElement("tr");
-
-        for (var j = 0; j < 6; j++) {
-            // Crea un elemento <td> y un nodo de texto, haz que el nodo de
-            // texto sea el contenido de <td>, ubica el elemento <td> al final
-            // de la hilera de la tabla
-            var celda = document.createElement("td");
-            var textoCelda = document.createTextNode("celda en la hilera " + i + ", columna " + j);
-            celda.appendChild(textoCelda);
-            hilera.appendChild(celda);
-        }
-
-        // agrega la hilera al final de la tabla (al final del elemento tblbody)
-        tblBody.appendChild(hilera);
-    }
-
-    // posiciona el <tbody> debajo del elemento <table>
-    tabla.appendChild(tblBody);
-    // appends <table> into <body>
-    body.appendChild(tabla);
-    // modifica el atributo "border" de la tabla y lo fija a "2";
-    //tabla.setAttribute("border", "2");
+//Eliminar Rows de la Tabla
+function eliminarRows(){
+    tableDT.destroy();
 }
+
+function loadScript(src) {
+    let script = document.createElement('script');
+    script.src = src;
+    script.async = true;
+    document.body.append(script);
+  }
+
+  

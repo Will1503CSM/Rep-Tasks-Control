@@ -11,8 +11,7 @@ import {
     getDoc,
     updateDoc
 } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-firestore.js"
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDcYCq0BsO2-HUYI6JmTlHoYNr6TD85Sgk",
@@ -27,15 +26,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 /* Agregar nuevo Documento*/
-export async function saveTask(codigo, fecha, description, estado ) {
-  try {
-    const dbRef =await addDoc(collection(db,"tasks"),{codigo, fecha, description, estado});
-    console.log("Document agregado con ID: ", dbRef.id);    
-    return dbRef.id;
-  } catch (error) {
-    console.log("Error agregando Documento: ", error);
-  }  
-
+export const saveTask = (codigo, fecha, description, estado ) =>{
+  return new Promise((resolve, reject) => {
+      const dbRef = addDoc(collection(db,"tasks"),{codigo, fecha, description, estado}=>{
+      resolve(dbRef.id);
+      }   )
+  }
+  )
 }
 /* Obtener Documentos*/
 export const getTasks = () => getDocs(collection(db,"tasks"));
