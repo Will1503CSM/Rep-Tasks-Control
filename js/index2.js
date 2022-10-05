@@ -96,9 +96,10 @@ window.addEventListener("DOMContentLoaded", async () => {
                 var resultado = window.confirm('Estas seguro?');
                 if (resultado === true) {
                     deleteTask(dataset.id);
-                    //taskForm["btn-task-save"].innerText = "Guardar";
-                    taskForm.reset();
-                    tabla.row(rowId).data([ id, codigo, fecha, description, estado, btnActu, btnElim ]).draw();
+                    tableDT.row( $(this).parents('tr') )
+                        .remove()
+                        .draw();
+                    
                 }
             })
         })

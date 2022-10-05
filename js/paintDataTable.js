@@ -1,6 +1,7 @@
 export function loadDataTable(){
-    const tabl = $('#tasksTable').DataTable({
+    const tableDT = $('#tasksTable').DataTable({
         destroy: true,
+        order: [[1, 'asc']],
         language: {
             processing: "Tratamiento en curso...",
                 search: "Buscar&nbsp;:",
@@ -36,7 +37,6 @@ export function loadDataTable(){
                 // }
             //]	   
         })
-
-    return tabl;
+    return tableDT;
 }
     

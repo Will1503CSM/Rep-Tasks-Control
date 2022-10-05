@@ -26,16 +26,25 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 /* Agregar nuevo Documento*/
-export const saveTask = (codigo, fecha, description, estado ) =>{
-  return new Promise((resolve, reject) => {
-      const dbRef = addDoc(collection(db,"tasks"),{codigo, fecha, description, estado}=>{
-      resolve(dbRef.id);
-      }   )
-  }
-  )
+export function saveTask(codigo, fecha, description, estado ){
+  return new Promise(function(resolve, reject) {
+      var dbRef = addDoc(collection(db,"tasks"),{codigo, fecha, description, estado});
+      if(dbRef!=undefined){
+        resolve(dbRef.id);
+      }else{
+        reject("Error al Agregar nuevo Documento");
+      }
+  });
 }
+// saveTask(codigo, fecha, description, estado).then(function (mensaje){
+//   console.log(mensaje);
+// }).catch(function (error){
+//   console.log(error);
+// }
+// )
+
 /* Obtener Documentos*/
-export const getTasks = () => getDocs(collection(db,"tasks"));
+export const getTasks = () => getDocs(collection(db,"tasks"),orderBy("description"),);
 
 /* Obtener SnapShot*/
 export const onGetTasks = (callback)=> onSnapshot(collection(db,"tasks"), callback);
