@@ -26,15 +26,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 /* Agregar nuevo Documento*/
-export function saveTask(codigo, fecha, description, estado ){
-  return new Promise(function(resolve, reject) {
-      var dbRef = addDoc(collection(db,"tasks"),{codigo, fecha, description, estado});
-      if(dbRef!=undefined){
-        resolve(dbRef.id);
-      }else{
-        reject("Error al Agregar nuevo Documento");
-      }
-  });
+export async function  saveTask(codigo, fecha, description, estado ){
+      console.log("Antes de addDoc");
+      const refId = await addDoc(collection(db,"tasks"),{codigo, fecha, description, estado}).then(console.log("Exito saveTask"));
+      console.log("refId:" + refId.id);
+      return refId.id; 
 }
 // saveTask(codigo, fecha, description, estado).then(function (mensaje){
 //   console.log(mensaje);

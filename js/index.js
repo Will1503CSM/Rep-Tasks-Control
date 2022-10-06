@@ -187,7 +187,7 @@ btnNew.addEventListener("click", (e) => {
 
 
 // Al hacer clich en Guardar
-taskForm.addEventListener("submit", (e) => {
+taskForm.addEventListener("submit", async (e) => {
     console.log("Ingreso a Guardar/Actu");
     e.preventDefault();
     const codigo = (taskForm["task-codigo"]).value;
@@ -196,10 +196,9 @@ taskForm.addEventListener("submit", (e) => {
     const estado = (taskForm["task-estado"]).value;
     if (!editStatus) {
         console.log("Antes de Agregar Nuevo");
-        idObt = saveTask(codigo, fecha, description, estado).then(function (mensaje) {
-            console.log("Ingreso Correcto: " + idObt + " Mensaje: " + mensaje);
-
-        }).catch(function (error) {
+        idObt = await saveTask(codigo, fecha, description, estado).then(
+            console.log("Ingreso Correcto Id: " + idObt)
+        ).catch(function (error) {
             console.log("error:" + error.message)
         })
     } else {
@@ -211,7 +210,6 @@ taskForm.addEventListener("submit", (e) => {
         // tableDT.row(rowId).data([ id, codigo, fecha, description, estado, btnActu, btnElim ]).draw();
         editStatus = false;
     }
-    console.log("Antes de loadDataTable");
     //eliminarRows();
     //$('#tasksTable').remove();
     //$('#tasksTable').draw();
