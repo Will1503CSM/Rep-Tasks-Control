@@ -28,7 +28,7 @@ const db = getFirestore(app);
 /* Agregar nuevo Documento*/
 export async function  saveTask(codigo, fecha, description, estado ){
       console.log("Antes de addDoc");
-      const refId = await addDoc(collection(db,"tasks"),{codigo, fecha, description, estado}).then(console.log("Exito saveTask"));
+      const refId = await addDoc(collection(db,"tasks"),{codigo, fecha, description, estado})
       console.log("refId:" + refId.id);
       return refId.id; 
 }

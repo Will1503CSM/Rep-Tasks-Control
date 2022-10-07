@@ -22,10 +22,10 @@ let idNuevo = null;
 let ban = false;
 window.addEventListener("load", async () => {
     console.log("ingreso a Load");
-    onGetTasks((querySnapshot) => {
+    await onGetTasks((querySnapshot) => {
         console.log("Obtiene Snapshot");
         let cont = 0;
-        querySnapshot.forEach((doc) => {
+        querySnapshot.forEach(async (doc) => {
             cont += 1;
             const task = doc.data()
             const row = document.createElement("tr");
@@ -91,7 +91,7 @@ window.addEventListener("load", async () => {
                 console.log("Dentro de Local idObt: " + idObt);
                 const btnActu = "<button type='" + "button" + "' data-id='" + (idObt) + "' class='" + "btn btn-primary btn-edit btn-sm" + "' data-bs-toggle='" + "modal" + "' data-bs-target='" + "#ventanaModal" + "' id='" + (idObt) + "'>" + iconoEditar + "</button>";
                 const btnElim = "<button data-id='" + (idObt) + "' class=" + "'btn btn-danger btn-delete btn-sm'" + " id='" + (idObt) + "'>" + iconoBorrar + "</button>";
-                tableDT.row.add(["idObt", cod, fec, des, est, btnActu, btnElim]).draw();//.node()//.id=(contRows+1);
+                await tableDT.row.add([idObt, cod, fec, des, est, btnActu, btnElim]).draw();//.node()//.id=(contRows+1);
                 console.log("Antes de Reload")
 
             }
@@ -184,10 +184,8 @@ btnNew.addEventListener("click", (e) => {
     taskForm.reset();
 })
 
-
-
 // Al hacer clich en Guardar
-taskForm.addEventListener("submit", async (e) => {
+taskForm.addEventListener("submit", (e) => {
     console.log("Ingreso a Guardar/Actu");
     e.preventDefault();
     const codigo = (taskForm["task-codigo"]).value;
@@ -196,11 +194,8 @@ taskForm.addEventListener("submit", async (e) => {
     const estado = (taskForm["task-estado"]).value;
     if (!editStatus) {
         console.log("Antes de Agregar Nuevo");
-        idObt = await saveTask(codigo, fecha, description, estado).then(
-            console.log("Ingreso Correcto Id: " + idObt)
-        ).catch(function (error) {
-            console.log("error:" + error.message)
-        })
+        ejecutarSave(codigo, fecha, description, estado, saveTask);
+        
     } else {
         updateTask(id, { codigo: codigo, fecha: fecha, description: description, estado: estado });
         const rowId = tableDT.row({ selected: true }).count();
@@ -213,12 +208,18 @@ taskForm.addEventListener("submit", async (e) => {
     //eliminarRows();
     //$('#tasksTable').remove();
     //$('#tasksTable').draw();
-
     taskForm["btn-task-save"].innerText = "Guardar";
     taskForm.reset();
 });
 
-
+function ejecutarSave(codigo, fecha, description, estado, saveTask){
+    try {
+        idObt =  saveTask(codigo, fecha, description, estado)
+        console.log("Ingreso Correcto Id: " + idObt);
+    } catch (error) {
+        console.log("error:" + error.message)
+    }
+}
 
 // Al HAcer CLick en Cerrar dentro de Modal
 taskForm.addEventListener("reset", (e) => {
