@@ -91,7 +91,11 @@ window.addEventListener("load", async () => {
                 console.log("Dentro de Local idObt: " + idObt);
                 const btnActu = "<button type='" + "button" + "' data-id='" + (idObt) + "' class='" + "btn btn-primary btn-edit btn-sm" + "' data-bs-toggle='" + "modal" + "' data-bs-target='" + "#ventanaModal" + "' id='" + (idObt) + "'>" + iconoEditar + "</button>";
                 const btnElim = "<button data-id='" + (idObt) + "' class=" + "'btn btn-danger btn-delete btn-sm'" + " id='" + (idObt) + "'>" + iconoBorrar + "</button>";
+<<<<<<< Updated upstream
                 await tableDT.row.add([idObt, cod, fec, des, est, btnActu, btnElim]).draw();//.node()//.id=(contRows+1);
+=======
+                tableDT.row.add([idObt, cod, fec, des, est, btnActu, btnElim]).draw();//.node()//.id=(contRows+1);
+>>>>>>> Stashed changes
                 console.log("Antes de Reload")
 
             }
